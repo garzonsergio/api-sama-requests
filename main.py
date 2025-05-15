@@ -3,6 +3,7 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 import requests
 import os
+from datetime import datetime
 
 # Initialize Firebase
 try:
@@ -26,11 +27,17 @@ def fetch_and_store_data():
         response.raise_for_status()  # Raise an exception for bad status codes (4xx or 5xx)
         data = response.json()
         
+        # Get the date and time of the last request
+        now = datetime.now().strftime("%Y%m%d_%H:%M")
+        # Set colection name with date and time
+        collection_name = f"estaciones_{now}"
+
+        
         if not data:
             print("No data received from API.")
             return
 
-        estaciones_collection = db.collection('estaciones')
+        estaciones_collection = db.collection(collection_name)
 
         stations_list = data.get('values', [])
         if not stations_list:
